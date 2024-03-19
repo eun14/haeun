@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Node<T>
 {
-    public T data;
+    public T data { get; set; }
     public Node<T> next;
 
     public Node(T data)
@@ -71,4 +71,10 @@ public class Queue<T>
     }
 }
 
+/*public class LinkedListNode<T>
+{
+    public T Data { get; set; }
+
+    public LinkedListNode<T> 
+}*/
 
