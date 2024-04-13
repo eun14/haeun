@@ -355,6 +355,7 @@
 "Assets/Scrit/Collection/GameManager.cs"
 "Assets/Scrit/Collection/Queue.cs"
 "Assets/Scrit/Collection/RedController.cs"
+"Assets/Scrit/Collection/StaticMeshGen.cs"
 -langversion:9.0
 
 /deterministic
