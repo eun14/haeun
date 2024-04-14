@@ -167,8 +167,28 @@ public class StaticMeshGen : MonoBehaviour
             34, 39, 30,
         };
 
+        Vector3[] normals = new Vector3[vertices.Length];                   // 각 꼭지점의 법선 벡터를 저장할 배열 초기화 (배열의 길이는 꼭지점의 개수와 같음)
+        for (int i = 0; i < triangleIndices.Length; i += 3)                 // 모든 삼각형에 대해 반복
+        {
+            Vector3 v0 = vertices[triangleIndices[i]];                      // 현재 삼각형의 세 꼭지점
+            Vector3 v1 = vertices[triangleIndices[i + 1]];
+            Vector3 v2 = vertices[triangleIndices[i + 2]];
+
+            Vector3 normal = Vector3.Cross(v1 - v0, v2 - v0).normalized;    // 현재 삼각형의 법선 벡터 계산 -> 삼각형의 두 변에 대한 외적을 구한 뒤 정규화
+
+            normals[triangleIndices[i]] += normal;                          // 현재 삼각형의 각 꼭지점에 대해 계산된 법선 벡터 누적
+            normals[triangleIndices[i + 1]] += normal;
+            normals[triangleIndices[i + 2]] += normal;
+        }
+
+        for(int i = 0; i < normals.Length;  i++)                            // 모든 꼭지점에 대해 반복하여 각 법선 벡터를 정규화 -> 모든 법선 벡터의 길이가 1인 단위 벡터가 됨
+        {
+            normals[i] = normals[i].normalized;
+        }
+
         mesh.vertices = vertices;
         mesh.triangles = triangleIndices;
+        mesh.normals = normals;
 
         MeshFilter mf = gameObject.GetComponent<MeshFilter>();
         if (mf == null)
