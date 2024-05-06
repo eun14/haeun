@@ -21,31 +21,36 @@ public class PlayerController : MonoBehaviour
         if (isRotating)
             return;
 
-        // 카메라의 오른쪽 벡터를 얻습니다.
+        // 카메라의 오른쪽 벡터와 전방 벡터를 얻습니다.
         Vector3 cameraRight = camera.transform.right;
+        Vector3 cameraForward = camera.transform.up;
 
         // 좌우 이동
         if (Input.GetKey(KeyCode.A))
         {
             // 카메라의 오른쪽 방향으로 이동합니다.
             transform.Translate(-cameraRight * speed * Time.deltaTime, Space.World);
+            RotatePlayer(cameraRight); // 이동에 따라 플레이어 회전
         }
         else if (Input.GetKey(KeyCode.D))
         {
             // 카메라의 오른쪽 방향으로 이동합니다.
             transform.Translate(cameraRight * speed * Time.deltaTime, Space.World);
+            RotatePlayer(-cameraRight); // 이동에 따라 플레이어 회전
         }
 
         // 상하 이동
         if (Input.GetKey(KeyCode.W))
         {
-            // 플레이어의 전방으로 이동합니다.
-            transform.Translate(transform.forward * speed * Time.deltaTime, Space.World);
+            // 카메라의 전방으로 이동합니다.
+            transform.Translate(cameraForward * speed * Time.deltaTime, Space.World);
+            RotatePlayer(-cameraForward); // 이동에 따라 플레이어 회전
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            // 플레이어의 반대 방향으로 이동합니다.
-            transform.Translate(-transform.forward * speed * Time.deltaTime, Space.World);
+            // 카메라의 후방으로 이동합니다.
+            transform.Translate(-cameraForward * speed * Time.deltaTime, Space.World);
+            RotatePlayer(cameraForward); // 이동에 따라 플레이어 회전
         }
 
         // O 키 입력에 따라 카메라를 왼쪽으로 90도 회전시킵니다.
@@ -62,6 +67,13 @@ public class PlayerController : MonoBehaviour
             targetRotation = Quaternion.Euler(camera.transform.rotation.eulerAngles.x, camera.transform.rotation.eulerAngles.y + 90f, camera.transform.rotation.eulerAngles.z); // 목표 회전 각도 설정
             StartCoroutine(RotateCamera());
         }
+    }
+
+    void RotatePlayer(Vector3 direction)
+    {
+        // 이동 방향에 맞게 플레이어 회전
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 500 * Time.deltaTime);
     }
 
     IEnumerator RotateCamera()
